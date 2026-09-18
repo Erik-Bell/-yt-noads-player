@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Video player</title>
+<style>
+  :root {
+    --bg: #000000;
+    --fg: #e5e5e5;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  #frame-wrap {
+    position: fixed;
+    inset: 0;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  #msg {
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+  <div id="msg">Loading video…</div>
+  <div id="frame-wrap"></div>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var videoId = params.get("v");
+      var msg = document.getElementById("msg");
+      var wrap = document.getElementById("frame-wrap");
+
+      if (!videoId || !/^[a-zA-Z0-9_-]{6,20}$/.test(videoId)) {
+        msg.textContent = "No valid video ID provided. Open this page as ?v=VIDEO_ID.";
+        return;
+      }
+
+      var iframe = document.createElement("iframe");
+      iframe.src =
+        "https://www.youtube-nocookie.com/embed/" +
+        encodeURIComponent(videoId) +
+        "?autoplay=1&rel=0";
+      iframe.title = "YouTube video player";
+      iframe.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+      msg.remove();
+      wrap.appendChild(iframe);
+    })();
+  </script>
+</body>
+</html>
